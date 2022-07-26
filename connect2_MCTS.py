@@ -36,6 +36,16 @@ def value_policy(child): # raises the value of each side: (2 or -2 for 2 in a ro
                 child[2] += j
     return child
 
+def expand(child): # expands all the possible childs of a given node
+    childs = [copy.deepcopy(child) for i in range(len(child[0]))]
+    todelete_indices = []
+    for i in range(len(child[0])):
+        if childs[i][0][i] == 0:
+            childs[i][0][i] = child[1]
+        else:
+            todelete_indices.append(i)
+    return [result for i, result in enumerate(childs) if i not in todelete_indices]
+
 
 
 if __name__ == '__main__':
