@@ -16,7 +16,7 @@ def rand_child(child): # this function creates a random child from the given nod
     return state
 
 def random_simulation(child):
-    # this function randomly simulates the entire game from the given node, calculates the value of terminal node and
+    # this function randomly simulates the game from the given node to the end, calculates the value of terminal node and
     # returns the given node with the updated value and number of visits
     depth = child[0].count(0)
     childs = [copy.deepcopy(child)]
