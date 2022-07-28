@@ -26,19 +26,26 @@ class Game:
             childs[0][2] = 0
             for i in range(depth):
                 childs.append(self.rand_child(childs[i]))
-            child[2] += self.value_policy(childs[0])[2]
-            child[3] += 1
+            value = self.value_policy(childs[0])[2]
+            if value * child[1] > 0:
+                child[2] += value
+                child[3] += 1
+            child[4] += 1
+        print(childs[0])
         return child
 
     def value_policy(self, child):  # raises the value of each side: (2 or -2 for 2 in a row, 3 or -3 for 3 in a row and 4 or -4 for 4 in a row)
         game_length = len(child[0])
+        win_minus, win_postive = 0, 0
         for j in range(2, int(game_length / 2) + 1):
-            for i in range(len(child[0])):
+             for i in range(len(child[0])):
                 if sum(child[0][i:i + j]) == -j:
-                    child[2] += -j
+                    win_minus += -j
                 if sum(child[0][i:i + j]) == j:
-                    child[2] += j
+                    win_postive += j
+        child[2] = win_postive + win_minus
         return child
+
 
     def expand(self, child):  # expands all the possible childs of a given node
         childs = [copy.deepcopy(child) for i in range(len(child[0]))]
@@ -49,6 +56,10 @@ class Game:
             else:
                 todelete_indices.append(i)
         return [result for i, result in enumerate(childs) if i not in todelete_indices]
+
+    def UCT_factor(self, child):
+        return
+
 
     def update(self, state):
         self.gamestate.append(state)
