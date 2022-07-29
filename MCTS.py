@@ -7,15 +7,11 @@ class Game:
         self.gamestate = []
 
     def rand_child(self, child):  # this function creates a random child from the given node
-        state = child
-        indice = [index for (index, item) in enumerate(state[0]) if item == 0]
+        indice = [index for (index, item) in enumerate(child[0]) if item == 0]
         random_ind = random.choice(indice)
-        if sum(state[0]) > 0:
-            state[0][random_ind] = -1
-        else:
-            state[0][random_ind] = 1
-        state[1] = -state[1]
-        return state
+        child[0][random_ind] = child[1]
+        child[1] = -child[1]
+        return child
 
     def random_simulation(self, child, number_of_simulations):
         # this function randomly simulates ''n = number_of_simulations times'' the entire game from the given node, calculates the value of terminal node and
@@ -31,7 +27,6 @@ class Game:
                 child[2] += value
                 child[3] += 1
             child[4] += 1
-        print(childs[0])
         return child
 
     def value_policy(self, child):  # raises the value of each side: (2 or -2 for 2 in a row, 3 or -3 for 3 in a row and 4 or -4 for 4 in a row)
@@ -48,17 +43,27 @@ class Game:
 
 
     def expand(self, child):  # expands all the possible childs of a given node
-        childs = [copy.deepcopy(child) for i in range(len(child[0]))]
-        todelete_indices = []
-        for i in range(len(child[0])):
-            if childs[i][0][i] == 0:
-                childs[i][0][i] = child[1]
-            else:
-                todelete_indices.append(i)
-        return [result for i, result in enumerate(childs) if i not in todelete_indices]
+        if child[5] == 0:
+            childs = [copy.deepcopy(child) for i in range(len(child[0]))]
+            todelete_indices = []
+            for i in range(len(child[0])):
+                if childs[i][0][i] == 0:
+                    childs[i][0][i] = child[1]
+                else:
+                    todelete_indices.append(i)
+            return [result for i, result in enumerate(childs) if i not in todelete_indices]
+        else:
+            return
+
+    def selection(self, childs):
+        list_value = []
+        for i in childs:
+            list_value.append(i[2])
+        return childs[list_value.index(max(list_value))]
 
     def UCT_factor(self, child):
-        return
+        child[6] = (child[3] / child[4]) + math.sqrt(2) * math.sqrt(math.log(2 * child[3] / child[3]))
+        return child
 
 
     def update(self, state):
