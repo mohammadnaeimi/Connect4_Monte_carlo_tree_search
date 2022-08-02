@@ -43,31 +43,54 @@ class Game:
 
 
     def expand(self, child):  # expands all the possible childs of a given node
-        if child[5] == 0:
+        if child[5] == 1:
+            return True
+        else:
             childs = [copy.deepcopy(child) for i in range(len(child[0]))]
             todelete_indices = []
             for i in range(len(child[0])):
                 if childs[i][0][i] == 0:
                     childs[i][0][i] = child[1]
+                    childs[i][1] = -child[1]
+                    childs[i][2], childs[i][3], childs[i][4], childs[i][6] = 0, 0, 0, 0
+                    child[5] = 1
                 else:
                     todelete_indices.append(i)
             return [result for i, result in enumerate(childs) if i not in todelete_indices]
-        else:
-            return
+    
+    
+    def backpropogation(self, selected): # updates the childs number of visits, number of wins and values
+        length = len(self.gamestate)
+        print(length)
+        board = []
+        for i in self.gamestate:
+            board.append(i[0])
+        print(board)
+        for i in board:
+            if selected[0] == i:
+                index_of_selected = board.index(i)
+        while length > 1:
+            for i in range(length):
+                self.gamestate[i][4] += self.gamestate[index_of_selected][4]
+            length -= 1
 
-    def selection(self, childs):
+    def selection(self, childs): # selects the child with higher UCB
         list_value = []
         for i in childs:
             list_value.append(i[2])
         return childs[list_value.index(max(list_value))]
 
-    def UCT_factor(self, child):
-        child[6] = (child[3] / child[4]) + math.sqrt(2) * math.sqrt(math.log(2 * child[3] / child[3]))
+    def UCB_factor(self, child, number_of_total_simulations):
+        child[6] = (child[3] / child[4]) + math.sqrt(2) * math.sqrt(math.log(number_of_total_simulations) / child[4])
         return child
 
 
-    def update(self, state):
-        self.gamestate.append(state)
+    def update(self, state): # updates the childs of visited
+        if len(state[0]) != 4:
+            for i in state:
+                self.gamestate.append(i)
+        else:
+            self.gamestate.append(state)
 
     def __str__(self):
          return "%s" % (self.gamestate)
