@@ -1,24 +1,24 @@
-import random
-import copy
 from MCTS import Game
 
 
-def run(g):
-    g.update(initial_state)
-    expand = g.expand(initial_state)
-    g.cycle(expand)
+
+def cycle(g):
+    g.expand()
+    expand = g.expanded
+    for i in expand:
+        g.random_simulation(i, 50)
+        g.number_of_total_simulations += i[3]
+        g.UCB_factor(i)
+    g.selection(expand)
     g.backpropogation()
-    select = g.selection(expand)
-    expand = g.expand(select)
-    g.cycle(expand)
-    g.backpropogation()
-    select = g.selection(expand)
+
+def Run_game():
+    g = Game(initial_state)
+    while g.expandlenght != 1:
+        cycle(g)
     print(g.gamestate)
-    print(g.selected)
-    print(g.expandindex)
-    print(g.expandlenght)
-                     
+
 
 if __name__ == '__main__':
-    g = Game(initial_state)
-    run(g)
+    initial_state = [[0, 0, 0, 0, 0, 0, 0, 0], -1, 0, 0, 0]
+    Run_game()
