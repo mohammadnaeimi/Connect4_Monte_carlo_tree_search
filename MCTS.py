@@ -85,9 +85,9 @@ class Game:
         for i in expand:
             self.random_simulation(i, 5)
             self.number_of_total_simulations += i[3]
-            self.UCT_factor(i)
+            self.UCB_factor(i)
 
-    def UCT_factor(self, child):
+    def UCB_factor(self, child):
         child[4] = round((child[2] / child[3]) + math.sqrt(2) * math.sqrt(math.log(self.number_of_total_simulations) / child[3]), 2)
         return child
 
