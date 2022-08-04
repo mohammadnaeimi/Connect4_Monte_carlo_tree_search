@@ -5,12 +5,13 @@ import math
 class Game:
 
     def __init__(self, initiate): # input value is a list containing >> 0:State - 1:To_play - 2:Number_of_wins - 3:Number_of_visits - 4:UCT_factor
-        self.toplay = initiate[1] # the players who's win is simulated 
+        self.toplay = initiate[1] # the players who's win is simulated
         self.gamestate = [] # the states of the game which have been visited
-        self.number_of_total_simulations = 0 
+        self.number_of_total_simulations = 0
         self.selected = [initiate] # the nodes
         self.expandindex = 1
         self.expandlenght = 0
+        self.expanded = 0
 
     def rand_child(self, child):  # this function creates a random child from the given node
         indice = [index for (index, item) in enumerate(child[0]) if item == 0]
@@ -50,7 +51,8 @@ class Game:
         return child
 
 
-    def expand(self, child):  # expands all the possible childs of a given node
+    def expand(self):  # expands all the possible childs of a given node
+        child = self.selected[-1]
         childs = [copy.deepcopy(child) for i in range(len(child[0]))]
         todelete_indices = []
         for i in range(len(child[0])):
@@ -60,10 +62,9 @@ class Game:
                 childs[i][2], childs[i][3], childs[i][4] = 0, 0, 0
             else:
                 todelete_indices.append(i)
-        result = [result for i, result in enumerate(childs) if i not in todelete_indices]
-        self.update(result)
-        self.expandlenght = len(result)
-        return result
+        self.expanded = [result for i, result in enumerate(childs) if i not in todelete_indices]
+        self.update(self.expanded)
+        self.expandlenght = len(self.expanded)
 
     def backpropogation(self): # updates the selected childs with the simulations
         length = len(self.gamestate)
@@ -80,12 +81,6 @@ class Game:
         result = childs[list_value.index(max(list_value))]
         self.selected.append(result)
         return result
-
-    def cycle(self, expand):
-        for i in expand:
-            self.random_simulation(i, 5)
-            self.number_of_total_simulations += i[3]
-            self.UCB_factor(i)
 
     def UCB_factor(self, child):
         child[4] = round((child[2] / child[3]) + math.sqrt(2) * math.sqrt(math.log(self.number_of_total_simulations) / child[3]), 2)
