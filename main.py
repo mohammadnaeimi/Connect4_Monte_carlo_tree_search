@@ -28,10 +28,14 @@ def iteration(parent):
         else:
             g.iteration(g.current_child)
 
-def game_play(): # runs the game between the user and the computer
+def game_play():
+    return
 
+def run(): # runs the game between the user and the computer
+    while g.check_leaf(g.current_child) is not True:
+        game_play()
     return
 
 
 if __name__ == '__main__':
-    print(cycle())
+    run()
