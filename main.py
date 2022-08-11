@@ -1,28 +1,37 @@
 from MCTS import Game
 
-def cycle(child, game):
-    depth = child[0].count(0)
-    for i in range(depth):
-        game.selection(child)
-        game.rollout(5, game.selected[-1])
-        game.backpropogation()
+initial_state = [[-1, 1, 1, -1, -1, 1, 1, 0], -1, 0, 0, 0, -1]
+g = Game(initial_state, -1)
+
+
+def cycle():
+    for i in range(10):
+        iteration(initial_state)
+
+    selection = g.expanded[0]
+    list_value = []
+    for i in selection:
+        list_value.append(i[4])
+    return selection[list_value.index(max(list_value))]
+
+def iteration(parent):
+    if parent[-1] == -1:
+        g.expand(parent)
+        g.selection(parent)
+        g.rollout(100)
+        g.backpropogation()
+    else:
+        g.selection(parent)
+        if g.current_child[2] == 0:
+            g.rollout(100)
+            g.backpropogation()
+        else:
+            g.iteration(g.current_child)
+
+def game_play(): # runs the game between the user and the computer
+
     return
 
 
-def run(): # runs the game between the user and the computer
-    initial_state, to_win = [[0, 0, 0, 0, 0, 0, 0, 0], 1, 0, 0, 0, -1], -1
-    g = Game(initial_state, to_win)
-    while g.check_leaf() is not True:
-        g.expand(g.current_child)
-        cycle(g.current_child, g)
-        g.selection(g.current_child)
-
-    print(g.gamestate)
-    print(g.expanded)
-    print(g.selected)
-    print(g.current_child)
-
-
 if __name__ == '__main__':
-    run()
-
+    print(cycle())
