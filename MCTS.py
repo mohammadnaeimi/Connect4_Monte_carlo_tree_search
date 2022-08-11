@@ -5,14 +5,14 @@ from itertools import cycle
 
 class Game:
 
-    def __init__(self, initiate, to_win): # input value is a list containing >> 0:State - 1:To_play - 2:Number_of_wins - 3:Number_of_visits - 4:UCT_factor
-        self.toplay = to_win # the players who's win is simulated
+    def __init__(self, initiate, towin): # input value is a list containing >> 0:State - 1:To_play - 2:Number_of_wins - 3:Number_of_visits - 4:UCT_factor
+        self.toplay = towin # the players who's win is simulated
         self.gamestate = [initiate] # the states of the game which have been visited
         self.number_of_total_simulations = 0
         self.selected = [initiate] # the nodes
         self.expanded = []
         self.selection_indice = [0]
-        self.current_child = 0
+        self.current_child = initiate
 
     def rand_child(self, child):  # this function creates a random child from the given node
         indice = [index for (index, item) in enumerate(child[0]) if item == 0]
@@ -41,7 +41,8 @@ class Game:
             i[4] = round((i[2] / i[3]) + math.sqrt(2) * math.sqrt(math.log(self.number_of_total_simulations) / i[3]), 2)
         return i[4]
 
-    def rollout(self, number_of_simulations, child):
+    def rollout(self, number_of_simulations):
+        child = self.current_child
         depth = child[0].count(0)
         for j in range(number_of_simulations):
             childs = [copy.deepcopy(child)]
@@ -83,16 +84,12 @@ class Game:
             if i[0] == result[0]:
                 self.selection_indice.append(self.gamestate.index(i))
         self.selected.append(result)
-        #self.selected = self.selected[-1:]
+        self.selected = self.selected[-4:]
         self.current_child = result
         return result
 
-    def check_leaf(self, child): # checks if the child is a terminal node
-        if sum(child) == 0:
-            return True
-
-    def check_expand(self, input): # checks if the input is a parent or a child: if True the input is a child node (not expanded yet)
-        if input[-1] == True:
+    def check_leaf(self): # checks if the child is a terminal node
+        if self.current_child[0].count(0) == 0:
             return True
 
     def update(self, state): # updates all the visited states of the tree
