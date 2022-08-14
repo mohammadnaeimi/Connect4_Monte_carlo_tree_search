@@ -1,7 +1,8 @@
 from MCTS import Game
 
 class model():
-    def __init__(self):
+    
+    def __init__(self, initial_state):
         self.board = initial_state
 
     def move(self, choose):
