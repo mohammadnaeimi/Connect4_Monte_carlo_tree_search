@@ -46,13 +46,3 @@ class model():
 
     def __str__(self, mode):
         return
-
-
-
-
-
-if __name__ == '__main__':
-    initial_state = [[0, 0, 0, 0, 0, 0, 0, 0], 0, 0, 0, 0, -1]
-    g = Game(initial_state)
-    g.toplay = -1
-    p = model()
