@@ -5,8 +5,8 @@ from itertools import cycle
 
 class Game:
 
-    def __init__(self, initiate, towin): # input value is a list containing >> 0:State - 1:To_play - 2:Number_of_wins - 3:Number_of_visits - 4:UCT_factor
-        self.toplay = towin # the players who's win is simulated
+    def __init__(self, initiate): # input value is a list containing >> 0:State - 1:To_play - 2:Number_of_wins - 3:Number_of_visits - 4:UCT_factor
+        self.toplay = 0 # the players who's win is simulated
         self.gamestate = [initiate] # the states of the game which have been visited
         self.number_of_total_simulations = 0
         self.selected = [initiate] # the nodes
@@ -91,6 +91,14 @@ class Game:
     def check_leaf(self): # checks if the child is a terminal node
         if self.current_child[0].count(0) == 0:
             return True
+
+    def is_expanded(self, parent):
+        if parent[5] == -1:
+            return False
+
+    def is_visited(self, parent):
+        if parent[2] == 0:
+            return False
 
     def update(self, state): # updates all the visited states of the tree
         if len(self.gamestate) == 0:
